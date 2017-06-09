@@ -1,17 +1,13 @@
-// readCSV
-// # how many bytes each data type takes
-
-//
+// Schema at lowest level
 // {
-//   title:          varchar(100),  # 100 bit
-//   movie_number:   integer,       # 32 bit
-//   number_tickets: integer,       # 32 bit
-//   show_time:      datetime       # 64 bit
+//   title:          varchar,       # 50 bytes
+//   movie_number:   integer,       # 4 bytes
+//   number_tickets: integer,       # 4 bytes
+//   show_time:      datetime       # 8 bytes
 // }
 
 
-
-var row = { "title" : "title" };
+var row = { "title" : "star wars" };
 // , "movie_number", "number_tickets", "show_time", "\n" };
 
 // var movies = [ { "Inception", 3, 100, "2016-10-01 10:00:00" },
@@ -21,16 +17,17 @@ var row = { "title" : "title" };
 // { "Lion King", 7, 100, "2016-03-01 10:00:00" }
 // ];
 
-// var bitConversion = {
-//   "varchar": varcharConverter,
-//   "integer": 32,
-//   "datetime": 64
+// var byteConversion = {
+//   "varchar": 50,
+//   "boolean": 2,
+//   "integer": 4,
+//   "datetime": 8
 // }
 
 function readSchema(schema) {
-  var totalLength = 0
-  var schemaHash = {}
-  var varCharMax = 1000;
+  var totalLength = 0;
+  var schemaHash = {};
+  var varCharMax = 50;
   var getCountExact = curry(padDifference, asciiToBin, varCharMax);
   var getCount = curry(padDifference, asciiToBin, varCharMax);
 
@@ -41,7 +38,7 @@ function readSchema(schema) {
 }
 
 function byteCount(s) {
-    return encodeURI(s).split(/%..|./).length - 1;
+  return encodeURI(s).split(/%..|./).length - 1;
 }
 
 function padDifference(s) {
@@ -50,10 +47,9 @@ function padDifference(s) {
   // console.log(
   var slength = s.length;
   // );
-  for(var i = slength; i < varCharMax; i++){
-    s.push(00000);
+  for(var i = slength; i < varCharMax; i++) {
+    s.push(00000)
   }
-
 }
 
 function curry(func1, func2, varCharMax) {
